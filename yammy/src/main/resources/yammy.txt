@@ -4,3 +4,4 @@ yammy~
 yammy~
 yammy~
 yamyammy~
+아 인스턴스 안켰다
