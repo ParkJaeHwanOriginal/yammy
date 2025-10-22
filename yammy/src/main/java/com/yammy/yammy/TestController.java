@@ -13,6 +13,7 @@ public class TestController {
         return "Yammy Project Backend is Running Successfully! (CI/CD Test Ready)" +
                 "배포자동화를 위해 연습중입니다!" +
                 "깃헙 액션 추가" +
-                "왜 추가가 안될까?";
+                "왜 추가가 안될까?" +
+                "빌드 위치 수정까지 했음";
     }
 }
