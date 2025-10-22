@@ -15,14 +15,14 @@ jobs:
           host: ${{ secrets.EC2_HOST }} # EC2의 주소
           username: ${{ secrets.EC2_USERNAME }} # EC2 접속 username
           key: ${{ secrets.EC2_PRIVATE_KEY }} # EC2의 Key 파일의 내부 텍스트
-          env: APPLICATION_PROPERTIES
+          envs: APPLICATION_PROPERTIES
           script_stop: true # 아래 script 중 실패하는 명령이 하나라도 있으면 실패로 처리
           script: |
             cd /home/ubuntu/yammy
-            rm -rf yammy/src/main/resources/application.yml # 이전에 있었던 파일 삭제
+            rm -rf yammy_back/src/main/resources/application.yml # 이전에 있었던 파일 삭제
             git pull origin master
-            echo "$APPLICATION_PROPERTIES" > yammy/yammy/src/main/resources/application.yml # 저 경로에 위의 변수를 담아 작성한다
-            cd yammy
+            echo "$APPLICATION_PROPERTIES" > yammy_back/src/main/resources/application.yml # 저 경로에 위의 변수를 담아 작성한다
+            cd yammy_back
             ./gradlew clean build
             sudo fuser -k -n tcp 80 || true # || true를 붙인 이유는 8080에 종료시킬 프로세스가 없더라도 실패로 처리하지 않기 위해서이다.
             # jar 파일을 실행시키는 명령어이다. 그리고 발생하는 로그들을 ./output.log 파일에 남기는 명령어이다.
