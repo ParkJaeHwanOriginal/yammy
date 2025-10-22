@@ -10,6 +10,7 @@ public class TestController {
     // 루트 경로 ("/")로 GET 요청이 오면 이 메서드가 실행됩니다.
     @GetMapping("/")
     public String home() {
-        return "Yammy Project Backend is Running Successfully! (CI/CD Test Ready)";
+        return "Yammy Project Backend is Running Successfully! (CI/CD Test Ready)" +
+                "배포자동화를 위해 연습중입니다!";
     }
 }
