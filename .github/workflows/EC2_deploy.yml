@@ -19,9 +19,9 @@ jobs:
           script_stop: true # 아래 script 중 실패하는 명령이 하나라도 있으면 실패로 처리
           script: |
             cd /home/ubuntu/yammy
-            rm -rf scr/main/resources/application.yml # 이전에 있었던 파일 삭제
+            rm -rf yammy/scr/main/resources/application.yml # 이전에 있었던 파일 삭제
             git pull origin master
-            echo "$APPLICATION_PROPERTIES" > src/main/resources/application.yml # 저 경로에 위의 변수를 담아 작성한다
+            echo "$APPLICATION_PROPERTIES" > yammy/src/main/resources/application.yml # 저 경로에 위의 변수를 담아 작성한다
             cd yammy
             ./gradlew clean build
             sudo fuser -k -n tcp 80 || true # || true를 붙인 이유는 8080에 종료시킬 프로세스가 없더라도 실패로 처리하지 않기 위해서이다.
