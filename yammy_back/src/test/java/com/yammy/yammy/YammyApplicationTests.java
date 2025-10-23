@@ -8,6 +8,7 @@ class YammyApplicationTests {
 
 	@Test
 	void contextLoads() {
+        throw new RuntimeException("Fail!");
 	}
 
 }
