@@ -26,7 +26,9 @@ jobs:
           ./gradlew clean build
 
       - name: 빌드 파일 이름 변경
-        run: mv ./build/libs/*SNAPSHOT.jar ./yammy_project.jar
+        # /github/workspace/yammy_back/build/libs 에 빌드됨
+        # 지금 위치는 /github/workspace임
+        run: mv ./yammy_back/build/libs/*SNAPSHOT.jar ./yammy_project.jar
 
       - name: SCP에 EC2에 빌드된 파일 전송하기
         uses: appleboy/scp-action@v0.1.7
