@@ -7,25 +7,46 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Github Repository 클론
+        uses: actions/checkout@v4
+
+      - name: JDK 17 설치
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: application.yml 파일 생성
+        run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./yammy_back/src/main/resources/application.yml
+
+      - name: 테스트 및 빌드
+        run: |
+          cd yammy_back
+          ./gradlew clean build
+
+      - name: 빌드 파일 이름 변경
+        run: mv ./build/libs/*SNAPSHOT.jar ./yammy_project.jar
+
+      - name: SCP에 EC2에 빌드된 파일 전송하기
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          source: project.jar
+          target: /home/ubuntu/yammy_project/tobe
+
       - name: SSH로 EC2에 접속하기
         uses: appleboy/ssh-action@v1.0.3
-        env:
-          APPLICATION_PROPERTIES: ${{ secrets.APPLICATION_PROPERTIES }}
         with:
           host: ${{ secrets.EC2_HOST }} # EC2의 주소
           username: ${{ secrets.EC2_USERNAME }} # EC2 접속 username
           key: ${{ secrets.EC2_PRIVATE_KEY }} # EC2의 Key 파일의 내부 텍스트
-          envs: APPLICATION_PROPERTIES
           script_stop: true # 아래 script 중 실패하는 명령이 하나라도 있으면 실패로 처리
           script: |
-            cd /home/ubuntu/yammy
-            rm -rf yammy_back/src/main/resources/application.yml # 이전에 있었던 파일 삭제
-            git pull origin master
-            echo "$APPLICATION_PROPERTIES" > yammy_back/src/main/resources/application.yml # 저 경로에 위의 변수를 담아 작성한다
-            cd yammy_back
-            ./gradlew clean build
-            sudo fuser -k -n tcp 80 || true # || true를 붙인 이유는 8080에 종료시킬 프로세스가 없더라도 실패로 처리하지 않기 위해서이다.
-            # jar 파일을 실행시키는 명령어이다. 그리고 발생하는 로그들을 ./output.log 파일에 남기는 명령어이다.
-            sudo nohup java -jar build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &
-            
-            # EC2 풀 잘 되는지 확인하기 위해 추가함
+            rm -rf /home/ubuntu/yammy_project/current
+            mkdir /home/ubuntu/yammy_project/current
+            mv /home/ubuntu/yammy_project/tobe/project.jar /home/ubuntu/yammy_project/current/project.jar
+            cd /home/ubuntu/yammy_project/current
+            sudo fuser -k -n tcp 80 || true
+            sudo nohup java -jar project.jar > ./output.log 2>&1 &
