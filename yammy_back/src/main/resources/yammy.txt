@@ -1,17 +1,1 @@
-yammy~
-yammy~
-yammy~
-yammy~
-yammy~
-yamyammy~
-기존 인바운드 규칙은 80만 열었고
-application.yml에다가
-server:
-	port: 80
-추가해서 8080을 열었음
-근데 지금은 인바운드 규칙은 그대로고
-application.yml은 민감 정보라고 해서 깃헙에 시크릿키로 뒀잖아
-그러면서 마구잡이 값을 넣었는데
-일단 application.yml 생성 된다
-시크릿키 yml 들여쓰기 이슈
-고고
+이제 깃헙액션에서 빌드 테스트 하고 ec2에는 던져서 실행만 합니다
