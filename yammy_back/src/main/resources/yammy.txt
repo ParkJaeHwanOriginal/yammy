@@ -14,3 +14,4 @@ application.yml은 민감 정보라고 해서 깃헙에 시크릿키로 뒀잖�
 그러면서 마구잡이 값을 넣었는데
 일단 application.yml 생성 된다
 시크릿키 yml 들여쓰기 이슈
+고고
