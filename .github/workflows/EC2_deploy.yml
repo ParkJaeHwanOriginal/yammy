@@ -53,10 +53,11 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
+          envs: AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_REGION
           script: |
             export PATH=$PATH:/usr/local/bin
             aws ecr get-login-password --region ap-northeast-2 | sudo docker login --username AWS --password-stdin 725115073641.dkr.ecr.ap-northeast-2.amazonaws.com
-            sudodocker stop yammy || true
+            sudo docker stop yammy || true
             sudo docker rm yammy || true
             sudo docker pull ${{ steps.login-ecr.outputs.registry }}/yammy:latest
             sudo docker run -d --name yammy -p 80:80 ${{ steps.login-ecr.outputs.registry }}/yammy:latest
