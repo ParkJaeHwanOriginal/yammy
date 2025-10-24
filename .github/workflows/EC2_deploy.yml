@@ -54,6 +54,7 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
+            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 725115073641.dkr.ecr.ap-northeast-2.amazonaws.com
             docker stop yammy || true
             docker rm yammy || true
             docker pull ${{ steps.login-ecr.outputs.registry }}/yammy:latest
