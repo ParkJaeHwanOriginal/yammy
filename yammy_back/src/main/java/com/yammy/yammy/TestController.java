@@ -27,12 +27,12 @@ public class TestController {
                         margin: 0 auto;
                         padding: 20px;
                         border-radius: 10px;
-                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
                         background-color: #ffffff;
                     }
                     h1 {
-                        color: #4CAF50; /* 초록색 */
-                        border-bottom: 2px solid #4CAF50;
+                        color: #1976D2; /* 파란색 */
+                        border-bottom: 2px solid #1976D2;
                         padding-bottom: 10px;
                     }
                     p {
@@ -41,35 +41,44 @@ public class TestController {
                         margin-top: 20px;
                     }
                     .status-box {
-                        background-color: #e8f5e9; /* 연한 초록색 배경 */
+                        background-color: #e3f2fd; /* 연한 파란색 배경 */
+                        color: #1565C0;
                         padding: 15px;
                         border-radius: 5px;
                         margin-top: 20px;
+                        font-size: 1.2em;
                         font-weight: bold;
+                        animation: pulse 1.5s infinite;
                     }
-                    .error {
-                        color: #f44336; /* 빨간색 */
-                        font-style: italic;
+                    @keyframes pulse {
+                        0% { transform: scale(1); }
+                        50% { transform: scale(1.02); }
+                        100% { transform: scale(1); }
+                    }
+                    .success-message {
+                        color: #388E3C; /* 진한 초록색 */
+                        font-weight: bold;
+                        margin-bottom: 15px;
                     }
                 </style>
             </head>
             <body>
                 <div class="container">
-                    <h1>✅ Yammy Project Backend Status</h1>
+                    <h1>🎉 Yammy Project Backend Status</h1>
                     
                     <p class="status-box">
-                        서버 상태: **Running Successfully!**
+                        서버 상태: **CI/CD 자동 배포 성공!**
                     </p>
 
-                    <p>
-                        <b>목표:</b> CI/CD (배포 자동화) 연습중입니다!
+                    <p class="success-message">
+                        GitHub Actions 파이프라인이 정상적으로 작동하여, 
+                        새로운 Docker 이미지가 EC2 서버에 성공적으로 반영되었습니다.
                     </p>
                     
-                    <p class="error">
-                        ❌ 깃헙 액션 문제점: 현재 GitHub Actions 실행은 확인되었으나,
-                        자동 배포(Deploy) 단계에서 설정 문제로 인해 최종 반영이 안 되고 있습니다.
-                        (Gradle 권한, EC2 경로, 포트 설정은 모두 확인되었습니다.)
+                    <p>
+                        <b>목표:</b> 견고한 CI/CD 환경 구축 완료!
                     </p>
+                    
                     <hr>
                     <small>최종 빌드 환경: Spring Boot v3.5.6, Java 17</small>
                 </div>
