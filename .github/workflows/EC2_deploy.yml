@@ -57,6 +57,7 @@ jobs:
           script: |
             export PATH=$PATH:/usr/local/bin
             aws ecr get-login-password --region ap-northeast-2 | sudo docker login --username AWS --password-stdin 725115073641.dkr.ecr.ap-northeast-2.amazonaws.com
+            sudo fuser -k -n tcp 80 || true
             sudo docker stop yammy || true
             sudo docker rm yammy || true
             sudo docker pull ${{ steps.login-ecr.outputs.registry }}/yammy:latest
