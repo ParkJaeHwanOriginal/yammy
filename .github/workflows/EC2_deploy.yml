@@ -25,31 +25,37 @@ jobs:
           chmod +x gradlew
           ./gradlew clean build
 
-      - name: 빌드 파일 이름 변경
-        # /github/workspace/yammy_back/build/libs 에 빌드됨
-        # 지금 위치는 /github/workspace임
-        run: mv ./yammy_back/build/libs/*SNAPSHOT.jar ./yammy_project.jar
+      ########################################
+      - name: AWS Resource에 접근할 수 있게 AWS credentials 설정
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-northeast-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: SCP에 EC2에 빌드된 파일 전송하기
-        uses: appleboy/scp-action@v0.1.7
+      - name: ECR에 로그인하기
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Docker 이미지 생성
+        run: docker build -t yammy .
+
+      - name: Docker 이미지에 Tag 붙이기
+        run: docker tag yammy ${{ steps.login-ecr.outputs.registry }}/yammy:latest
+      
+      - name: ECR에 Docker 이미지 Push하기
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/yammy:latest
+      
+      - name: SSH로 EC2에 접속하기
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
-          source: yammy_project.jar
-          target: /home/ubuntu/yammy_project/tobe
-
-      - name: SSH로 EC2에 접속하기
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }} # EC2의 주소
-          username: ${{ secrets.EC2_USERNAME }} # EC2 접속 username
-          key: ${{ secrets.EC2_PRIVATE_KEY }} # EC2의 Key 파일의 내부 텍스트
-          script_stop: true # 아래 script 중 실패하는 명령이 하나라도 있으면 실패로 처리
+          script_stop: true
           script: |
-            rm -rf /home/ubuntu/yammy_project/current
-            mkdir /home/ubuntu/yammy_project/current
-            mv /home/ubuntu/yammy_project/tobe/yammy_project.jar /home/ubuntu/yammy_project/current/yammy_project.jar
-            cd /home/ubuntu/yammy_project/current
-            sudo fuser -k -n tcp 80 || true
-            sudo nohup java -jar yammy_project.jar > ./output.log 2>&1 &
+            docker stop yammy || true
+            docker rm yammy || true
+            docker pull ${{ steps.login-ecr.outputs.registry }}/yammy:latest
+            docker run -d --name yammy -p 80:80 ${{ steps.login-ecr.outputs.registry }}/yammy:latest
+      # 여기는 sudo 붙이면 no basic auth credentials 라고 에러 발생
