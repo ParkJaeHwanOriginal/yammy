@@ -59,4 +59,5 @@ jobs:
             docker rm yammy || true
             docker pull ${{ steps.login-ecr.outputs.registry }}/yammy:latest
             docker run -d --name yammy -p 80:80 ${{ steps.login-ecr.outputs.registry }}/yammy:latest
+      # 첫 줄은 도커 로그인 코드
       # 여기는 sudo 붙이면 no basic auth credentials 라고 에러 발생
