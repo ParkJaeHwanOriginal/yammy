@@ -1,7 +1,16 @@
-@GetMapping("/")
-public String home() {
-    // 퍼플랙시티 UI 분위기의 심플/모던 HTML, 색상·컴포넌트 재배치
-    return """
+package com.yammy.yammy;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class TestController {
+
+    // 루트 경로 ("/")로 GET 요청이 오면 이 메서드가 실행됩니다.
+    @GetMapping("/")
+    public String home() {
+        // 퍼플랙시티 UI 분위기의 심플/모던 HTML, 색상·컴포넌트 재배치
+        return """
         <!DOCTYPE html>
         <html lang="ko">
         <head>
@@ -97,4 +106,6 @@ public String home() {
         </body>
         </html>
         """;
+    }
+
 }
